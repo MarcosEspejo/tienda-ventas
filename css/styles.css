@@ -142,6 +142,33 @@ button {
     font-family: inherit;
 }
 
+/* Mejoras para touch en móviles */
+@media (hover: none) and (pointer: coarse) {
+    button,
+    a,
+    .filter-btn,
+    .category-card,
+    .product-card,
+    .add-to-cart {
+        -webkit-tap-highlight-color: rgba(99, 102, 241, 0.2);
+    }
+    
+    /* Aumentar área de toque en elementos pequeños */
+    .btn-icon {
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    .filter-btn {
+        min-height: 40px;
+        padding: 10px 18px;
+    }
+    
+    .add-to-cart {
+        min-height: 44px;
+    }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 12px;
@@ -2082,6 +2109,17 @@ button {
    Responsive
    ======================================== */
 
+/* Tablets y pantallas medianas */
+@media (max-width: 1200px) {
+    .container {
+        padding: 0 32px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+}
+
 @media (max-width: 1024px) {
     .nav {
         display: none;
@@ -2095,26 +2133,64 @@ button {
         width: 200px;
     }
     
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    
     .footer-grid {
         grid-template-columns: 1fr 1fr;
+    }
+    
+    .container {
+        padding: 0 24px;
     }
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding: 0 20px;
+    }
+    
+    .hero {
+        padding: 80px 0 60px;
+    }
+    
     .hero-title {
         font-size: 36px;
+        line-height: 1.2;
+        margin-bottom: 16px;
     }
     
     .hero-subtitle {
         font-size: 16px;
+        margin-bottom: 24px;
     }
     
     .section-title {
         font-size: 28px;
+        margin-bottom: 24px;
     }
     
     .categories-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+    
+    .category-card {
+        padding: 24px 16px;
+    }
+    
+    .category-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        margin-bottom: 12px;
     }
     
     .products-grid {
@@ -2122,8 +2198,40 @@ button {
         gap: 20px;
     }
     
+    .product-card {
+        padding: 16px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+    
+    .filters {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+    }
+    
+    .filters::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .filters::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 2px;
+    }
+    
     .newsletter-form {
         flex-direction: column;
+        gap: 12px;
+    }
+    
+    .newsletter-form input,
+    .newsletter-form button {
+        width: 100%;
     }
     
     .cart-sidebar,
@@ -2136,6 +2244,7 @@ button {
         padding: 20px;
         width: 95%;
         max-height: 95vh;
+        margin: 20px;
     }
     
     .modal-title {
@@ -2178,45 +2287,156 @@ button {
         display: none;
     }
     
+    .header-actions {
+        gap: 12px;
+    }
+    
     .footer-grid {
         grid-template-columns: 1fr;
         gap: 32px;
     }
+    
+    .promo-banner {
+        padding: 60px 0;
+    }
 }
 
 @media (max-width: 480px) {
+    .container {
+        padding: 0 16px;
+    }
+    
     .hero {
-        padding: 60px 0;
+        padding: 60px 0 40px;
     }
     
     .hero-title {
         font-size: 28px;
+        margin-bottom: 12px;
+    }
+    
+    .hero-subtitle {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 20px;
     }
     
     .categories-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .category-card {
+        padding: 20px;
+    }
+    
+    .category-card h3 {
+        font-size: 16px;
     }
     
     .products-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .product-card {
+        padding: 12px;
+    }
+    
+    .product-title {
+        font-size: 16px;
+    }
+    
+    .add-to-cart {
+        padding: 10px;
+        font-size: 14px;
     }
     
     .filters {
         gap: 8px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
     }
     
     .filter-btn {
         padding: 8px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    
+    .header-content {
+        padding: 12px 0;
+    }
+    
+    .logo {
+        font-size: 18px;
+    }
+    
+    .logo i {
+        font-size: 20px;
+    }
+    
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .cart-sidebar {
+        width: 100%;
+    }
+    
+    .cart-item {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .cart-item-image {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+    
+    .newsletter {
+        padding: 40px 0;
+    }
+    
+    .newsletter-content h2 {
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+    
+    .newsletter-content p {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .promo-banner {
+        padding: 40px 0;
+    }
+    
+    .promo-content h2 {
+        font-size: 24px;
+    }
+    
+    .promo-content p {
         font-size: 14px;
     }
     
     .checkout-content {
         max-height: 100vh;
         border-radius: 0;
+        width: 100%;
+        margin: 0;
     }
     
     .checkout-header {
-        padding: 20px;
+        padding: 20px 16px;
     }
     
     .checkout-header h2 {
@@ -2224,11 +2444,21 @@ button {
     }
     
     .checkout-steps {
-        padding: 16px 20px;
+        padding: 16px;
+    }
+    
+    .step {
+        font-size: 12px;
     }
     
     .step span {
         display: none;
+    }
+    
+    .step-number {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
     }
     
     .step-line {
@@ -2236,7 +2466,7 @@ button {
     }
     
     .checkout-body {
-        padding: 20px;
+        padding: 20px 16px;
     }
     
     .form-row {
@@ -2245,8 +2475,13 @@ button {
     
     .checkout-actions {
         flex-direction: column;
+        gap: 12px;
     }
     
     .checkout-actions .btn {
         width: 100%;
+    }
+    
+    .load-more {
+        padding: 20px 0;
     }
