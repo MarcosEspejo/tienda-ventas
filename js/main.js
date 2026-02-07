@@ -147,6 +147,9 @@ let displayedProducts = 8;
 let isLoggedIn = false;
 let currentUser = null;
 
+// Número de WhatsApp (cambiar por el tuyo)
+const WHATSAPP_NUMBER = '573001234567'; // Formato: Código país + número (sin espacios ni caracteres especiales)
+
 // ========================================
 // Inicialización
 // ========================================
@@ -167,10 +170,35 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
+    loadCartFromStorage();
     renderProducts();
     setupEventListeners();
     updateCartUI();
     createParticles();
+}
+
+// ========================================
+// LocalStorage Functions
+// ========================================
+
+function saveCartToStorage() {
+    try {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    } catch (error) {
+        console.error('Error al guardar carrito:', error);
+    }
+}
+
+function loadCartFromStorage() {
+    try {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+        }
+    } catch (error) {
+        console.error('Error al cargar carrito:', error);
+        cart = [];
+    }
 }
 
 // ========================================
@@ -371,11 +399,11 @@ function setupEventListeners() {
         overlay.classList.remove('active');
     });
 
-    // Botón de Checkout
+    // Botón de Checkout - WhatsApp
     const checkoutBtn = document.getElementById('checkoutBtn');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
-            openCheckoutModal();
+            sendToWhatsApp();
         });
     }
 
@@ -551,12 +579,14 @@ function addToCart(productId) {
         });
     }
     
+    saveCartToStorage();
     updateCartUI();
     showNotification('Producto agregado al carrito');
 }
 
 function removeFromCart(productId) {
     cart = cart.filter(item => item.id !== productId);
+    saveCartToStorage();
     updateCartUI();
 }
 
@@ -569,6 +599,7 @@ function updateQuantity(productId, change) {
     if (item.quantity <= 0) {
         removeFromCart(productId);
     } else {
+        saveCartToStorage();
         updateCartUI();
     }
 }
@@ -643,6 +674,50 @@ function showNotification(message) {
         notification.style.animation = 'slideOut 0.3s ease';
         setTimeout(() => notification.remove(), 300);
     }, 2000);
+}
+
+// ========================================
+// Sistema de WhatsApp
+// ========================================
+
+function sendToWhatsApp() {
+    if (cart.length === 0) {
+        showNotification('Tu carrito está vacío');
+        return;
+    }
+    
+    // Generar mensaje
+    let mensaje = '¡Hola! 👋 Me gustaría hacer el siguiente pedido:\\n\\n';
+    
+    // Agregar productos
+    cart.forEach((item, index) => {
+        mensaje += `${index + 1}. *${item.title}*\\n`;
+        mensaje += `   Cantidad: ${item.quantity}\\n`;
+        mensaje += `   Precio: $${item.price.toLocaleString('es-CO')}\\n`;
+        mensaje += `   Subtotal: $${(item.price * item.quantity).toLocaleString('es-CO')}\\n\\n`;
+    });
+    
+    // Calcular total
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    mensaje += `*TOTAL: $${total.toLocaleString('es-CO')}*\\n\\n`;
+    mensaje += '¿Podrías confirmarme disponibilidad y costo de envío? 📦';
+    
+    // Codificar mensaje
+    const mensajeCodificado = encodeURIComponent(mensaje);
+    
+    // Generar link de WhatsApp
+    const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeCodificado}`;
+    
+    // Abrir WhatsApp
+    window.open(whatsappLink, '_blank');
+    
+    // Cerrar sidebar del carrito
+    const cartSidebar = document.getElementById('cartSidebar');
+    const overlay = document.getElementById('overlay');
+    if (cartSidebar) cartSidebar.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+    
+    showNotification('¡Abriendo WhatsApp! 📱');
 }
 
 // ========================================
