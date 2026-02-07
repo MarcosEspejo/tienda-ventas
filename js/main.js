@@ -148,7 +148,7 @@ let isLoggedIn = false;
 let currentUser = null;
 
 // Número de WhatsApp (cambiar por el tuyo)
-const WHATSAPP_NUMBER = '573001234567'; // Formato: Código país + número (sin espacios ni caracteres especiales)
+const WHATSAPP_NUMBER = '573028503225'; // Formato: Código país + número (sin espacios ni caracteres especiales)
 
 // ========================================
 // Inicialización
@@ -443,6 +443,14 @@ function setupEventListeners() {
             }
         });
     });
+    
+    // Selector de ciudad para envío
+    const shippingCitySelect = document.getElementById('shippingCity');
+    if (shippingCitySelect) {
+        shippingCitySelect.addEventListener('change', () => {
+            updateCartUI();
+        });
+    }
 }
 
 // ========================================
@@ -607,6 +615,8 @@ function updateQuantity(productId, change) {
 function updateCartUI() {
     const cartCount = document.getElementById('cartCount');
     const cartItems = document.getElementById('cartItems');
+    const cartSubtotal = document.getElementById('cartSubtotal');
+    const cartShipping = document.getElementById('cartShipping');
     const cartTotal = document.getElementById('cartTotal');
     
     // Actualizar contador
@@ -643,9 +653,26 @@ function updateCartUI() {
         `).join('');
     }
     
-    // Actualizar total
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    cartTotal.textContent = `$${total.toLocaleString('es-CO')}`;
+    // Calcular subtotal
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    // Obtener costo de envío
+    const citySelect = document.getElementById('shippingCity');
+    const selectedCity = citySelect ? citySelect.value : '';
+    const shippingCost = calculateShipping(selectedCity);
+    
+    // Actualizar valores
+    if (cartSubtotal) cartSubtotal.textContent = `$${subtotal.toLocaleString('es-CO')}`;
+    if (cartShipping) {
+        if (selectedCity) {
+            cartShipping.textContent = shippingCost === 0 ? 'GRATIS' : `$${shippingCost.toLocaleString('es-CO')}`;
+        } else {
+            cartShipping.textContent = 'Selecciona ciudad';
+        }
+    }
+    
+    const total = subtotal + (selectedCity ? shippingCost : 0);
+    if (cartTotal) cartTotal.textContent = `$${total.toLocaleString('es-CO')}`;
 }
 
 function showNotification(message) {
@@ -686,27 +713,40 @@ function sendToWhatsApp() {
         return;
     }
     
-    // Generar mensaje
-    let mensaje = '¡Hola! 👋 Me gustaría hacer el siguiente pedido:\\n\\n';
+    // Obtener ciudad y costo de envío
+    const citySelect = document.getElementById('shippingCity');
+    const selectedCity = citySelect ? citySelect.value : '';
+    const shippingCost = calculateShipping(selectedCity);
+    
+    // Validar que se haya seleccionado ciudad
+    if (!selectedCity) {
+        showNotification('Por favor selecciona tu ciudad para calcular el envío');
+        return;
+    }
+    
+    // Generar mensaje con formato correcto para WhatsApp
+    let mensaje = '¡Hola! 👋 Me gustaría hacer el siguiente pedido:%0A%0A';
     
     // Agregar productos
     cart.forEach((item, index) => {
-        mensaje += `${index + 1}. *${item.title}*\\n`;
-        mensaje += `   Cantidad: ${item.quantity}\\n`;
-        mensaje += `   Precio: $${item.price.toLocaleString('es-CO')}\\n`;
-        mensaje += `   Subtotal: $${(item.price * item.quantity).toLocaleString('es-CO')}\\n\\n`;
+        mensaje += `${index + 1}. *${item.title}*%0A`;
+        mensaje += `   • Cantidad: ${item.quantity}%0A`;
+        mensaje += `   • Precio: $${item.price.toLocaleString('es-CO')}%0A`;
+        mensaje += `   • Subtotal: $${(item.price * item.quantity).toLocaleString('es-CO')}%0A%0A`;
     });
     
-    // Calcular total
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    mensaje += `*TOTAL: $${total.toLocaleString('es-CO')}*\\n\\n`;
-    mensaje += '¿Podrías confirmarme disponibilidad y costo de envío? 📦';
+    // Calcular subtotal
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
-    // Codificar mensaje
-    const mensajeCodificado = encodeURIComponent(mensaje);
+    mensaje += `📦 *Resumen del pedido:*%0A`;
+    mensaje += `   • Subtotal: $${subtotal.toLocaleString('es-CO')}%0A`;
+    mensaje += `   • Envío a ${selectedCity}: $${shippingCost.toLocaleString('es-CO')}%0A`;
+    mensaje += `   • *TOTAL: $${(subtotal + shippingCost).toLocaleString('es-CO')}*%0A%0A`;
+    mensaje += `📍 Ciudad: ${selectedCity}%0A%0A`;
+    mensaje += '¿Podrías confirmar disponibilidad? ¡Gracias! 😊';
     
-    // Generar link de WhatsApp
-    const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeCodificado}`;
+    // Generar link de WhatsApp (ya no necesita encodeURIComponent porque ya usamos %0A)
+    const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`;
     
     // Abrir WhatsApp
     window.open(whatsappLink, '_blank');
@@ -718,6 +758,35 @@ function sendToWhatsApp() {
     if (overlay) overlay.classList.remove('active');
     
     showNotification('¡Abriendo WhatsApp! 📱');
+}
+
+// Calcular costo de envío según ciudad
+function calculateShipping(city) {
+    const shippingRates = {
+        'Bogotá': 0, // Envío gratis
+        'Medellín': 15000,
+        'Cali': 15000,
+        'Barranquilla': 20000,
+        'Cartagena': 20000,
+        'Santa Marta': 20000,
+        'Bucaramanga': 18000,
+        'Pereira': 18000,
+        'Manizales': 18000,
+        'Armenia': 18000,
+        'Ibagué': 18000,
+        'Villavicencio': 18000,
+        'Pasto': 25000,
+        'Cúcuta': 25000,
+        'Neiva': 20000,
+        'Popayán': 20000,
+        'Tunja': 15000,
+        'Montería': 25000,
+        'Sincelejo': 25000,
+        'Valledupar': 25000,
+        'Otra ciudad': 30000
+    };
+    
+    return shippingRates[city] || 30000;
 }
 
 // ========================================

@@ -435,9 +435,49 @@
             <!-- Los items se cargarán dinámicamente -->
         </div>
         <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total:</span>
-                <span id="cartTotal">$0</span>
+            <div class="shipping-calculator">
+                <label for="shippingCity">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Selecciona tu ciudad:
+                </label>
+                <select id="shippingCity" class="shipping-select">
+                    <option value="">-- Elige tu ciudad --</option>
+                    <option value="Bogotá">Bogotá (Envío GRATIS 🎉)</option>
+                    <option value="Medellín">Medellín ($15.000)</option>
+                    <option value="Cali">Cali ($15.000)</option>
+                    <option value="Barranquilla">Barranquilla ($20.000)</option>
+                    <option value="Cartagena">Cartagena ($20.000)</option>
+                    <option value="Santa Marta">Santa Marta ($20.000)</option>
+                    <option value="Bucaramanga">Bucaramanga ($18.000)</option>
+                    <option value="Pereira">Pereira ($18.000)</option>
+                    <option value="Manizales">Manizales ($18.000)</option>
+                    <option value="Armenia">Armenia ($18.000)</option>
+                    <option value="Ibagué">Ibagué ($18.000)</option>
+                    <option value="Villavicencio">Villavicencio ($18.000)</option>
+                    <option value="Pasto">Pasto ($25.000)</option>
+                    <option value="Cúcuta">Cúcuta ($25.000)</option>
+                    <option value="Neiva">Neiva ($20.000)</option>
+                    <option value="Popayán">Popayán ($20.000)</option>
+                    <option value="Tunja">Tunja ($15.000)</option>
+                    <option value="Montería">Montería ($25.000)</option>
+                    <option value="Sincelejo">Sincelejo ($25.000)</option>
+                    <option value="Valledupar">Valledupar ($25.000)</option>
+                    <option value="Otra ciudad">Otra ciudad ($30.000)</option>
+                </select>
+            </div>
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="cartSubtotal">$0</span>
+                </div>
+                <div class="summary-row shipping-row">
+                    <span>Envío:</span>
+                    <span id="cartShipping">$0</span>
+                </div>
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotal">$0</span>
+                </div>
             </div>
             <button class="btn btn-success btn-block" id="checkoutBtn">
                 <i class="fab fa-whatsapp"></i>
