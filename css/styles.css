@@ -1514,6 +1514,42 @@ button {
     font-weight: 600;
 }
 
+.summary-row.shipping-row.free-shipping {
+    color: var(--success-color);
+}
+
+.free-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, var(--success-color), #059669);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.free-hint {
+    display: block;
+    font-size: 11px;
+    color: var(--text-light);
+    font-weight: 400;
+    margin-top: 4px;
+    font-style: italic;
+}
+
 .cart-total {
     display: flex;
     justify-content: space-between;

@@ -659,13 +659,28 @@ function updateCartUI() {
     // Obtener costo de envío
     const citySelect = document.getElementById('shippingCity');
     const selectedCity = citySelect ? citySelect.value : '';
-    const shippingCost = calculateShipping(selectedCity);
+    const shippingCost = calculateShipping(selectedCity, subtotal);
+    
+    // Mostrar badge de envío gratis si aplica
+    const shippingRow = document.querySelector('.shipping-row');
+    if (shippingRow && subtotal >= 200000 && selectedCity) {
+        shippingRow.classList.add('free-shipping');
+    } else if (shippingRow) {
+        shippingRow.classList.remove('free-shipping');
+    }
     
     // Actualizar valores
     if (cartSubtotal) cartSubtotal.textContent = `$${subtotal.toLocaleString('es-CO')}`;
     if (cartShipping) {
         if (selectedCity) {
-            cartShipping.textContent = shippingCost === 0 ? 'GRATIS' : `$${shippingCost.toLocaleString('es-CO')}`;
+            if (subtotal >= 200000) {
+                cartShipping.innerHTML = '<span class="free-badge">🎉 GRATIS</span>';
+            } else if (shippingCost === 0) {
+                cartShipping.textContent = 'GRATIS';
+            } else {
+                const remaining = 200000 - subtotal;
+                cartShipping.innerHTML = `$${shippingCost.toLocaleString('es-CO')} <small class="free-hint">Faltan $${remaining.toLocaleString('es-CO')} para envío gratis</small>`;
+            }
         } else {
             cartShipping.textContent = 'Selecciona ciudad';
         }
@@ -716,7 +731,10 @@ function sendToWhatsApp() {
     // Obtener ciudad y costo de envío
     const citySelect = document.getElementById('shippingCity');
     const selectedCity = citySelect ? citySelect.value : '';
-    const shippingCost = calculateShipping(selectedCity);
+    
+    // Calcular subtotal
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const shippingCost = calculateShipping(selectedCity, subtotal);
     
     // Validar que se haya seleccionado ciudad
     if (!selectedCity) {
@@ -735,12 +753,20 @@ function sendToWhatsApp() {
         mensaje += `   • Subtotal: $${(item.price * item.quantity).toLocaleString('es-CO')}%0A%0A`;
     });
     
-    // Calcular subtotal
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    
     mensaje += `📦 *Resumen del pedido:*%0A`;
     mensaje += `   • Subtotal: $${subtotal.toLocaleString('es-CO')}%0A`;
-    mensaje += `   • Envío a ${selectedCity}: $${shippingCost.toLocaleString('es-CO')}%0A`;
+    
+    // Mostrar envío
+    if (shippingCost === 0) {
+        if (subtotal >= 200000) {
+            mensaje += `   • Envío a ${selectedCity}: GRATIS 🎉 (¡Compra mayor a $200.000!)%0A`;
+        } else {
+            mensaje += `   • Envío a ${selectedCity}: GRATIS%0A`;
+        }
+    } else {
+        mensaje += `   • Envío a ${selectedCity}: $${shippingCost.toLocaleString('es-CO')}%0A`;
+    }
+    
     mensaje += `   • *TOTAL: $${(subtotal + shippingCost).toLocaleString('es-CO')}*%0A%0A`;
     mensaje += `📍 Ciudad: ${selectedCity}%0A%0A`;
     mensaje += '¿Podrías confirmar disponibilidad? ¡Gracias! 😊';
@@ -760,8 +786,13 @@ function sendToWhatsApp() {
     showNotification('¡Abriendo WhatsApp! 📱');
 }
 
-// Calcular costo de envío según ciudad
-function calculateShipping(city) {
+// Calcular costo de envío según ciudad y monto
+function calculateShipping(city, subtotal = 0) {
+    // Envío GRATIS si el subtotal es mayor a $200.000
+    if (subtotal >= 200000) {
+        return 0;
+    }
+    
     const shippingRates = {
         'Bogotá': 0, // Envío gratis
         'Medellín': 15000,
