@@ -855,7 +855,7 @@ button {
 
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
     gap: 24px;
 }
 
@@ -977,7 +977,7 @@ button {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 32px;
     margin-bottom: 48px;
 }
@@ -2537,17 +2537,63 @@ button {
     }
     
     .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
 @media (max-width: 1024px) {
     .nav {
-        display: none;
+        position: fixed;
+        top: 76px;
+        right: -100%;
+        width: 280px;
+        height: calc(100vh - 76px);
+        background: var(--bg-secondary);
+        border-left: 1px solid var(--border-color);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .nav-menu {
+        flex-direction: column;
+        padding: 24px 0;
+        height: 100%;
+        overflow-y: auto;
+    }
+    
+    .nav-menu.active {
+        right: 0;
+    }
+    
+    .nav.active .nav-menu {
+        display: flex;
+    }
+    
+    .nav-link {
+        padding: 16px 24px;
+        width: 100%;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .nav-link:hover {
+        background: rgba(99, 102, 241, 0.1);
     }
     
     .menu-toggle {
         display: block;
+        font-size: 24px;
+        color: var(--text-primary);
+        transition: var(--transition);
+    }
+    
+    .menu-toggle.active {
+        color: var(--primary-color);
     }
     
     .search-box input {
@@ -2555,8 +2601,8 @@ button {
     }
     
     .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
     }
     
     .categories-grid {
@@ -2583,7 +2629,7 @@ button {
     }
     
     .hero-title {
-        font-size: 36px;
+        font-size: 32px;
         line-height: 1.2;
         margin-bottom: 16px;
     }
@@ -2591,6 +2637,11 @@ button {
     .hero-subtitle {
         font-size: 16px;
         margin-bottom: 24px;
+    }
+    
+    .hero-badge {
+        font-size: 12px;
+        padding: 6px 16px;
     }
     
     .section-title {
@@ -2615,12 +2666,29 @@ button {
     }
     
     .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
     }
     
     .product-card {
-        padding: 16px;
+        padding: 12px;
+    }
+    
+    .product-image {
+        height: 160px;
+    }
+    
+    .product-title {
+        font-size: 14px;
+    }
+    
+    .product-category {
+        font-size: 11px;
+    }
+    
+    .add-to-cart {
+        padding: 10px;
+        font-size: 13px;
     }
     
     .section-header {
@@ -2643,6 +2711,21 @@ button {
     .filters::-webkit-scrollbar-thumb {
         background: var(--primary-color);
         border-radius: 2px;
+    }
+    
+    .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .faq-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
     
     .newsletter-form {
@@ -2732,7 +2815,7 @@ button {
     }
     
     .hero-title {
-        font-size: 28px;
+        font-size: 26px;
         margin-bottom: 12px;
     }
     
@@ -2741,40 +2824,83 @@ button {
         margin-bottom: 20px;
     }
     
+    .hero-badge {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+    }
+    
     .section-title {
         font-size: 24px;
         margin-bottom: 20px;
     }
     
     .categories-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
     
     .category-card {
-        padding: 20px;
+        padding: 20px 12px;
     }
     
     .category-card h3 {
-        font-size: 16px;
+        font-size: 14px;
+    }
+    
+    .category-card p {
+        font-size: 12px;
     }
     
     .products-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
     }
     
     .product-card {
-        padding: 12px;
+        padding: 10px;
+    }
+    
+    .product-image {
+        height: 140px;
     }
     
     .product-title {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+    
+    .product-category {
+        font-size: 10px;
+    }
+    
+    .product-rating {
+        font-size: 11px;
+    }
+    
+    .current-price {
         font-size: 16px;
     }
     
+    .old-price {
+        font-size: 13px;
+    }
+    
     .add-to-cart {
-        padding: 10px;
-        font-size: 14px;
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .add-to-cart i {
+        display: none;
     }
     
     .filters {
@@ -2784,8 +2910,8 @@ button {
     }
     
     .filter-btn {
-        padding: 8px 16px;
-        font-size: 14px;
+        padding: 8px 14px;
+        font-size: 13px;
         white-space: nowrap;
         flex-shrink: 0;
     }
@@ -2795,17 +2921,44 @@ button {
     }
     
     .logo {
-        font-size: 18px;
+        font-size: 16px;
     }
     
     .logo i {
-        font-size: 20px;
+        font-size: 18px;
     }
     
     .btn-icon {
         width: 40px;
         height: 40px;
-        font-size: 18px;
+        font-size: 16px;
+    }
+    
+    .trust-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .trust-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+    
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .step-card {
+        padding: 32px 20px;
+    }
+    
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .faq-grid {
+        grid-template-columns: 1fr;
     }
     
     .cart-sidebar {

@@ -232,6 +232,38 @@ function setupEventListeners() {
     // Elementos globales
     const overlay = document.getElementById('overlay');
     
+    // Menú hamburguesa
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.querySelector('.nav-menu');
+    
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+            
+            // Cambiar icono
+            const icon = menuToggle.querySelector('i');
+            if (navMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Cerrar menú al hacer click en un link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+                const icon = menuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            });
+        });
+    }
+    
     // Filtros de productos
     const filterButtons = document.querySelectorAll('.filter-btn');
     filterButtons.forEach(btn => {
